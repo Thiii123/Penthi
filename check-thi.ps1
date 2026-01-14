@@ -1,6 +1,6 @@
 try {
     Write-Host "Iniciando script..." -ForegroundColor Cyan
-    $urlControle = "https://github.com/Thiii123/Penthi/blob/main/status.txt"
+    $urlControle = "https://raw.githubusercontent.com/Thiii123/Penthi/refs/heads/main/check-thi.ps1"
     
     # Tenta baixar o status
     Write-Host "Verificando conexao com o GitHub..."
@@ -19,4 +19,5 @@ catch {
 
 Write-Host "Pressione ENTER para fechar."
 Read-Host # Trava a janela aberta para voce ler
+
 
