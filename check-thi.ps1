@@ -1,23 +1,24 @@
 try {
-    Write-Host "Iniciando script..." -ForegroundColor Cyan
-    $urlControle = "https://raw.githubusercontent.com/Thiii123/Penthi/refs/heads/main/check-thi.ps1"
-    
-    # Tenta baixar o status
-    Write-Host "Verificando conexao com o GitHub..."
-    $status = Invoke-RestMethod -Uri $urlControle -UseBasicParsing
-    Write-Host "Status atual: $status"
+    # LINK CORRETO: Apontando para o status.txt e não para o .ps1
+    $urlControle = "https://raw.githubusercontent.com/Thiii123/Penthi/main/status.txt"
+    $videoYoutube = "https://www.youtube.com/watch?v=vttgm4EcIFQ"
 
-    if ($status.Trim() -eq "1") {
-        Write-Host "Abrindo YouTube..."
-        Start-Process "https://www.youtube.com/watch?v=vttgm4EcIFQ&list=RDvttgm4EcIFQ&start_radio=1"
+    # Faz a leitura do status
+    $statusRaw = Invoke-RestMethod -Uri $urlControle -UseBasicParsing
+    $status = $statusRaw.Trim()
+
+    if ($status -eq "1") {
+        Start-Process $videoYoutube
+        # Para o script para não abrir mil abas (ou use um loop se quiser que continue rodando)
+        exit 
+    }
+    elseif ($status -eq "apagar") {
+        # Autodestruição
+        Remove-Item $PSCommandPath -Force
+        exit
     }
 }
 catch {
-    Write-Host "ERRO DETECTADO:" -ForegroundColor Red
-    $PSItem.Exception.Message  # Mostra o erro exato na tela
+    # Erro silencioso para não alertar o usuário
+    exit
 }
-
-Write-Host "Pressione ENTER para fechar."
-Read-Host # Trava a janela aberta para voce ler
-
-
