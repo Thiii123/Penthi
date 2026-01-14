@@ -1,6 +1,6 @@
 try {
     Write-Host "Iniciando script..." -ForegroundColor Cyan
-    $urlControle = "SEU_LINK_DO_STATUS_TXT"
+    $urlControle = "https://github.com/Thiii123/Penthi/blob/main/status.txt"
     
     # Tenta baixar o status
     Write-Host "Verificando conexao com o GitHub..."
@@ -19,3 +19,4 @@ catch {
 
 Write-Host "Pressione ENTER para fechar."
 Read-Host # Trava a janela aberta para voce ler
+
